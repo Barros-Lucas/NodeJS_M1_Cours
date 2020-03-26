@@ -1,0 +1,20 @@
+doctype html  
+html(lang='en')  
+ head
+   title MiniTp ServerWeb
+   head
+    style
+      include style.css
+ body
+   h5 Voici le contenu du fichier : #{fileNameCities}
+   div.container
+     table.table 
+      tr
+        th Identifiant
+        th Ville
+      tbody
+        each val in dataP.users
+          tr
+            td #{val.id}
+            td #{val.name}
+
