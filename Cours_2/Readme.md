@@ -55,3 +55,5 @@ Le resultat attendu était:
 
 Cette page est générée par mon html : Cours_2\Map_test\JQueryMap\france\front\testMap.html
 note que je n'ai pas ajouté au code git mes essaies, il s'agissait d'une copie de la request GET avec un corps vide faisant juste appelle à mon fichier html.
+Résultat dans mon serveur :
+![Image description](Captures_postman/MapFrance_notshow.PNG)
