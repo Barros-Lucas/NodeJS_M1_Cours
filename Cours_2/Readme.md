@@ -46,3 +46,12 @@ Il nous a été ensuite demandé de rajouter les quatres requetes HTTP dont voic
 ## [DELETE] -> delete entity with none existing id
 
 ![Image description](Captures_postman/delete_idNotExist_11.PNG)
+
+## Partie Bonus
+
+J'ai essayé d'ajouter une carte à l'adresse /citiesMap mais malheureusement je n'arrive pas à afficher le composant Map via express, même en passant par pug, ni même via un send file.
+Le resultat attendu était:
+![Image description](Captures_postman/MapFrance.PNG)
+
+Cette page est générée par mon html : Cours_2\Map_test\JQueryMap\france\front\testMap.html
+note que je n'ai pas ajouté au code git mes essaies, il s'agissait d'une copie de la request GET avec un corps vide faisant juste appelle à mon fichier html.
