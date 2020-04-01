@@ -172,6 +172,7 @@ app.put('/city/:id', function (req, res) {
                 }
          
                 let city_name=req.body.name;
+                //Note : on pourrait utiliser l'id en parametre mais comme la spec indique que l'id est présent dans le body ... copier coller plus simple
                 let city_id=req.body.id;
                 const cities = JSON.parse(data);
 
@@ -186,10 +187,6 @@ app.put('/city/:id', function (req, res) {
                 })
 
                 if(exist){
-                    //nothing else for the moment
-                    // let newCity = {"id" : city_id, "name": city_name}
-                    // cities.cities.push(newCity)
-
                     fs.writeFile(fileNameCities, JSON.stringify(cities), function (err) {
                         if (err) res.status(500).send("Error write file");
                         res.status(200).send(cities)
@@ -205,6 +202,51 @@ app.put('/city/:id', function (req, res) {
 
 });
 
+app.delete('/city/:id', function (req, res) {
 
+    const fileNameCities = 'cities.json';
+    fs.readFile(fileNameCities,'utf8',(err,data)=>{
+        if(err){
+            if(err.code == 'ENOENT'){
+                res.status(404).send(`${fileNameCities} Not found`);
+                return
+            }
+            console.error(err)
+            return
+        }
+
+        //search id on file
+        let city_id=req.params.id;
+        const cities = JSON.parse(data);
+
+        let exist = false;
+        cities.cities.forEach(function (item, index, object){
+            console.log(item.id);
+            if(item.id === city_id){
+                //existe
+                exist = true;
+                //remove from file
+                delete cities.cities[index];
+                return;
+            }
+
+            if(exist){
+                //eliminate all the null values from the data
+                cities.cities = cities.cities.filter(function(x) { return x !== null }); 
+                fs.writeFile(fileNameCities, JSON.stringify(cities), function (err) {
+                    if (err) res.status(500).send("Error write file");
+                    res.status(200).send(cities)
+                  });  
+            }else{
+                res.status(500).send("Id not found maybe not exist");
+                return;
+            }
+
+        })
+
+
+    });
+
+});
 
 app.listen(port, () => console.log(`Server running at port ${port}`));
