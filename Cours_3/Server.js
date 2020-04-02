@@ -5,7 +5,7 @@ let app = express();
 const port = 3000;
 app.use(express.static('public'));
 app.use(express.json());
-
+app.use(express.urlencoded())
 
 const mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost/TP_Web",{useNewUrlParser: true});
@@ -51,6 +51,36 @@ app.get('/cities',(req,res) =>{
     })
 
 });
+app.get('/cityAjout',(req,res) =>{
+    
+
+
+        const pug = require("pug");
+
+        const compiledFunction = pug.compileFile('templateAjout.pug');
+
+        
+
+        const generatedTemplate = compiledFunction({
+        });
+
+        res.status(200).send(generatedTemplate);
+
+  
+
+});
+
+// app.get('/AddVille',(req,res) =>{
+    
+
+// console.log(req.query.ville)
+
+//     res.status(200).send("ok" + req);
+//     res.send("/city/")
+
+
+
+// });
 
 
 app.post('/city',(req,res) =>{
@@ -60,9 +90,10 @@ app.post('/city',(req,res) =>{
             res.status(500).send(`Get error on BD`);
             return console.error(err);
         } 
+        let name = req.body.name;
             let exist = false;
                 cities.forEach(function (elt){
-                    if(elt.name === req.body.name){
+                    if(elt.name === name){
                         //existe
                         exist = true;
                         return;
@@ -72,7 +103,7 @@ app.post('/city',(req,res) =>{
                 if(exist){
                     res.status(500).send("Name of city already exist");
                 }else{
-                    const newCity = new City({"name": req.body.name});
+                    const newCity = new City({"name":name});
                     
                     newCity.save(function(err){
                         if(err){
@@ -81,7 +112,7 @@ app.post('/city',(req,res) =>{
                         }
                         City.find(function(err, cities){
                             if(err){
-                                res.status(500).send(`Problem when return value, put ok`);
+                                res.status(500).send(`Problem when return value, post ok`);
                                 return console.error(err)
                             }
                             res.status(200).send(cities);
@@ -95,64 +126,84 @@ app.post('/city',(req,res) =>{
 });
     
 
-// app.put('/city/:id', function (req, res) {
+app.put('/city/:id',(req, res)=>{
 
-//     const fileNameCities = 'cities.json';
-//     fs.access(fileNameCities,'utf8',(err,data)=>{
-        
-//         if(err){
+    City.find(function(err, cities){
+        if(err){
+            res.status(500).send(`Get error on BD`);
+            return console.error(err);
+        } 
 
-//             const city= {
-//                 "id":req.body.id,
-//                 "name": req.body.name
-//             };
-//             const cityContent = JSON.stringify({"cities":[city]});
+        City.findByIdAndUpdate({_id: req.params.id},
+            {
+                name:req.body.name
+            },
+        (err, city)=>{
+            if(!city){
+            //ne pas faire de test en ajoutant des char aleatoire..
+                if(err != null && err.name === 'CastError'){
+                    res.status(400).send(`Id not correct : Argument passed in must be a single String of 12 bytes or a string of 24 hex characters`);
+                    return ;
+                }
+                
+                    res.status(404).send(`Id not found`);
+                    return;
+                
+            }else{
+                City.findById({_id: req.params.id},
+                    (err,city)=>{
+                        if(err){
+                            res.status(500).send(`Put work, problem with show`);
+                            return console.error(err);
+                        }
+                        res.status(200).send(city);
+                    }
+                    )
+            }
 
-           
-//             //creation du fichier
-//             fs.writeFile(fileNameCities, cityContent, function (err) {
-//                 if (err) res.status(500).send("Error write file");
-//                 res.status(200).send(cityContent)
-//                 });  
             
-//         }else{
-//             //check all if id exist, if exist -> update row name with body.name
-//             fs.readFile(fileNameCities,'utf8',(err,data)=>{
-//                 if(err){
-//                     res.status(500).send(`Error open file`);
-//                     return
-//                 }
-         
-//                 let city_name=req.body.name;
-//                 //Note : on pourrait utiliser l'id en parametre mais comme la spec indique que l'id est présent dans le body ... copier coller plus simple
-//                 let city_id=req.body.id;
-//                 const cities = JSON.parse(data);
 
-//                 let exist = false;
-//                 cities.cities.forEach(function (elt){
-//                     if(elt.id === city_id){
-//                         //existe -> change name
-//                         elt.name = city_name
-//                         exist = true;
-//                         return;
-//                     }
-//                 })
+            
+        });
+    
+    });
 
-//                 if(exist){
-//                     fs.writeFile(fileNameCities, JSON.stringify(cities), function (err) {
-//                         if (err) res.status(500).send("Error write file");
-//                         res.status(200).send(cities)
-//                       });  
-//                 }else{
+});
 
-//                     res.status(500).send("Id not found maybe not exist");
-//                     return;
-//                 }
-//             });
-//         }
-//     });
 
-// });
+app.delete('/city/:id', function (req, res) {
+
+    City.find(function(err, cities){
+        if(err){
+            res.status(500).send(`Get error on BD`);
+            return console.error(err);
+        } 
+
+        City.findByIdAndDelete({_id: req.params.id},
+        (err, city)=>{
+            if(!city){
+            //ne pas faire de test en ajoutant des char aleatoire..
+                if(err != null && err.name === 'CastError'){
+                    res.status(400).send(`Id not correct : Argument passed in must be a single String of 12 bytes or a string of 24 hex characters`);
+                    return ;
+                }
+                
+                    res.status(404).send(`Id not found`);
+                    return;
+                
+            }else{
+                res.status(200).send('DELETE ok')
+            }
+
+            
+
+            
+        });
+    
+    });
+
+});
+
 
 // app.delete('/city/:id', function (req, res) {
 
@@ -200,24 +251,5 @@ app.post('/city',(req,res) =>{
 
 // });
 
-// const path = require('path');
-// app.get('/citiesMap',(req,res) =>{
-//     const fileNameCities = 'JQueryMap/France/front/testMap.html'
-//     fs.readFile(fileNameCities,'utf8',(err,data)=>{
-//         if(err){
-//             if(err.code == 'ENOENT'){
-//                 res.status(404).send(`${fileNameCities} Not found`);
-//                 return
-//             }
-//             console.error(err)
-//             return
-//         }
-//             res.sendFile(path.join(__dirname+'/JQueryMap/France/front/testMap.html'));
-    
-           
-
-
-//     });
-// });
 
 app.listen(port, () => console.log(`Server running at port ${port}`));

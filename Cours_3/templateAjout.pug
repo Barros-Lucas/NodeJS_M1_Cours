@@ -1,0 +1,15 @@
+doctype html
+head
+  title Bootstrap Example
+  meta(charset='utf-8')
+  meta(name='viewport' content='width=device-width, initial-scale=1')
+  link(rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css')
+  script(src='https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js')
+  script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js')
+.container
+  h2 Ajout d&apos;une ville
+  form(action="/city" method="post")
+    .form-group
+      label(for='name') Ville:
+      input#ville.form-control(type='text' placeholder='Nom de la ville' name='name')
+    button.btn.btn-default(type='submit') Ajouter
