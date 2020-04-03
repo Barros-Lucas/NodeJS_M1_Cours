@@ -37,7 +37,8 @@ app.get('/cities',(req,res) =>{
 
         const pug = require("pug");
 
-        const compiledFunction = pug.compileFile('templateMdb.pug');
+        //const compiledFunction = pug.compileFile('templateMdb.pug');
+        const compiledFunction = pug.compileFile('templateTest.pug');
 
         
 
@@ -180,6 +181,17 @@ app.put('/city/:id',(req, res)=>{
             return console.error(err);
         } 
 
+        let name = req.body.name;
+        let exist = false;
+        cities.forEach(function (elt){
+            if(elt.name === name){
+                //existe
+                exist = true;
+                return;
+            }
+        })
+
+        if(!exist){
         City.findByIdAndUpdate({_id: req.params.id},
             {
                 name:req.body.name
@@ -196,6 +208,7 @@ app.put('/city/:id',(req, res)=>{
                     return;
                 
             }else{
+                
                 City.findById({_id: req.params.id},
                     (err,city)=>{
                         if(err){
@@ -211,6 +224,9 @@ app.put('/city/:id',(req, res)=>{
 
             
         });
+        }else{
+            res.status(500).send("Name of city already exist");
+        }
     
     });
 
