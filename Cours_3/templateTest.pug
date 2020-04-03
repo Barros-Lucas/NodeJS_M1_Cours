@@ -25,9 +25,9 @@ body
             td #{val._id}
             td #{val.name}
             td
-              button.btn(type='button' onclick="changeID(\'"+ val._id +"\',\'"+val.name+ "\')") v
+              button.btn(type='button' onclick="modifName(\'"+ val._id +"\',\'"+val.name+ "\')") o
             td
-              button.btn(type='button' onclick='delete()') x
+              button.btn(type='button' onclick="removeCity(\'"+ val._id+"\')") x
 #modifVille-modal.modal(role='dialog')
   .modal-dialog
     .modal-content
