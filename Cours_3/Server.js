@@ -70,17 +70,59 @@ app.get('/cityAjout',(req,res) =>{
 
 });
 
-// app.get('/AddVille',(req,res) =>{
-    
+//Exactement la meme fonction que /city mais comme je sais pas si c'est 'propre'
+//de mettre le cas de retour UI dans une requete post classique je prefere séparer
+app.post('/cityAjout',(req,res) =>{
 
-// console.log(req.query.ville)
+    City.find(function(err, cities){
+        if(err){
+            res.status(500).send(`Get error on BD`);
+            return console.error(err);
+        } 
+        
+        const pug = require("pug");
 
-//     res.status(200).send("ok" + req);
-//     res.send("/city/")
+        
+        
+
+        let name = req.body.name;
+            let exist = false;
+                cities.forEach(function (elt){
+                    if(elt.name === name){
+                        //existe
+                        exist = true;
+                        return;
+                    }
+                })
+
+                if(exist){
+                    const compiledFunction = pug.compileFile('templateErrorAddCity.pug');
+                    const generatedTemplate = compiledFunction({});
+                    res.status(500).send(generatedTemplate);
+                }else{
+                    const newCity = new City({"name":name});
+                    
+                    newCity.save(function(err){
+                        if(err){
+                            res.status(500).send(`POST error on BD`);
+                            return console.error(err);
+                        }
+                        City.find(function(err, cities){
+                            if(err){
+                                res.status(500).send(`Problem when return value, post ok`);
+                                return console.error(err)
+                            }
+                            const compiledFunction = pug.compileFile('templateOkAddCity.pug');
+                            const generatedTemplate = compiledFunction({});
+                            res.status(200).send(generatedTemplate);
+                        })
+                    })
 
 
+                }
 
-// });
+    });
+});
 
 
 app.post('/city',(req,res) =>{
@@ -90,6 +132,10 @@ app.post('/city',(req,res) =>{
             res.status(500).send(`Get error on BD`);
             return console.error(err);
         } 
+        
+        
+        
+
         let name = req.body.name;
             let exist = false;
                 cities.forEach(function (elt){
@@ -107,7 +153,7 @@ app.post('/city',(req,res) =>{
                     
                     newCity.save(function(err){
                         if(err){
-                            res.status(500).send(`PUT error on BD`);
+                            res.status(500).send(`POST error on BD`);
                             return console.error(err);
                         }
                         City.find(function(err, cities){
