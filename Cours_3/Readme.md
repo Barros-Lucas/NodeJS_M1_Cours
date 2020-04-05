@@ -20,7 +20,7 @@ Il nous a été d'abord demandé de modifier nos requetes pour qu'elles utilisen
 
 ![Image description](Captures/Post_newCity_ok_03.PNG)
 
-## Affichage (l'affiche retourne les données directes de la base)
+## Affichage (l'affichage retourne les données directes de la base)
 
 ![Image description](Captures/Get_cities_web_showPostOK_05.PNG)
 
