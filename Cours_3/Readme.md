@@ -1,6 +1,6 @@
-## TP 2 : Apprentissage de Express
+## TP 2 : Apprentissage de MongoDB
 
-Lancement du serveur : node .\Server.js .\data.csv
+Lancement du serveur : node .\Server.js
 
 Dans ce TP il est question de reprendre le TP précédant, et de modifier l'existant avec une base de données MongoDB.
 
